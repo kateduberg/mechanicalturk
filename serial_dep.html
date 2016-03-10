@@ -1,0 +1,634 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="https://timbrady.org/turk/TimTurkTools.js"></script>
+
+<style>
+.partDiv {
+  margin: 0 0;
+  padding: 0 0;
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: Arial, Helvetica;
+  font-size: 14pt;
+  background: gray;
+}
+
+#instructions{
+  top: 1em;
+  left: 50%;
+  position: absolute;
+  width: 30em;
+  margin-left: -15em;
+  padding: auto;  
+  text-align: center;
+}
+
+ul {
+  text-align: left;
+}
+#instructions .inst_img {
+  width: 100%;
+}
+
+.instDiv{
+  display: none;
+}
+
+#previous{
+  display: none;
+}
+
+#next{
+  display: none;
+}
+
+#startExperiment {
+  color: rgb(200,200,200);
+  text-decoration: none;
+}
+
+#startExperiment:hover {
+  color: white;
+}
+
+#startExperimentButton {
+  width: 12.5em;
+  text-align: center;
+  border: 0.25em outset gray;
+  background: gray;
+  /*padding: 0.4em;*/
+  margin: auto;
+  margin-top:2em;
+}
+
+#submitButton {
+  left: 50%;
+  top: 50%;
+  position: fixed;
+  margin: auto;
+  display: none;
+}
+#bg {
+  margin: auto;
+  width: 56.25em;
+  height: 37.5em;
+  background: gray;
+  display: none;
+  position: fixed;
+}
+#bg #fix_point {
+  top: 50%;
+  left: 50%;  
+  position: fixed;
+  -ms-transform: translate(-50%, -50%); /* IE 9 */
+  -webkit-transform: translate(-50%, -50%); /* Chrome, Safari, Opera */
+  transform: translate(-50%, -50%);
+  width:0.3125em;
+  height:0.3125em;
+  -webkit-border-radius: 0.3125em;
+  -moz-border-radius: 0.3125em;
+  border-radius: 0.3125em;
+  background: black;
+  z-index: 3;
+}
+
+.img{
+  top: 50%;
+  left: 80%;  
+  position: fixed;
+  margin-left: -3.125em;
+  margin-top: -3.125em;
+}
+
+#bg #bar {
+    width: 7.5em;
+    height: 1em;
+    top: 50%;
+    left: 50%;
+    margin-left: -3.75em;
+    margin-top: -0.5em;
+    position: fixed;
+    background-color: #333333;
+    /*border: 1px solid black;*/
+    z-index: 1;
+}
+
+#gabor_img{
+  width: 6.25em;
+  height: 6.25em;
+}
+
+#text{
+  position: fixed;
+  display: none;
+}
+
+
+#bg .prac_inst{
+  top: 50%;
+  left: 80%;  
+  position: fixed;
+  margin-left: -3.125em;
+  margin-top: -3.5em;
+}
+
+#bg #practice_inst{
+  top:10%;
+  width: 100%;
+  /*left:20%;*/
+  position: fixed;
+}
+
+#bg #finishPractice{
+  top:20%;
+  left:20%;
+  position: fixed;
+}
+
+#bg #part5{
+  top:20%;
+  left:20%;
+  position: fixed;  
+} 
+
+#consentForm {
+  width: 100%;
+  height: 80%;
+  resize: both;
+  overflow: auto;
+  /*position: absolute;*/
+}
+
+</style>
+
+<div id="consent">
+  <iframe id="consentForm" src="https://docs.google.com/document/d/17SOGO13fc96WXpD4VIqJcZcwHd3STRlj60X4d6z15KE/pub?embedded=true" frameborder="0" ></iframe>
+  <input type="radio" name="consent" value="yes" onClick="disableStart(false)">I agree<br>
+  <input type="radio" name="consent" value="no" onClick="disableStart(true)">I don't agree<br>
+  <button type="button" id="agreeAndStart" disabled>Start</button>
+</div>
+
+<div id="instructions">
+  <div id="page0" class="instDiv">
+    <h2>Input your resolution</h2>
+    <input type="text" id="resW" value="1280"> x <input type="text" id="resH" value="800">
+    <!-- <button type="button" onclick="resize()">Update and Continue</button> -->
+  </div>
+  <div id="page1" class="instDiv">
+    <h2>Instructions</h2>
+    <p>In this HIT, you will have to perform an orientation matching task. It should take about 30-40 minutes total. The task will require you to adjust the orientation of a bar matching the orientation of previously shown black and white stripes. </p>
+    
+    <p>During the entire experiment you need to:</p>
+    <ul>
+      <li>Stay 57 cm (22 inches) away from the screen.</li>
+      <li>Look at the fixation dot all the time without moving your eyes. </li>
+    </ul>
+  </div>
+
+  <div id="page2" class="instDiv">
+    <p><b>First</b>, you will see black and white stripes oriented in different directions:</p>
+    
+    <!-- Examples of oriented stripes and correct orientation-->
+    <img src="http://imgur.com/x3hzlN8.jpg" class="inst_img">
+  </div>
+
+  <div id="page3" class="instDiv">
+    <p><b>Second</b>, you will see a patch of white and black noise:</p>
+    <!-- Examples of patches of black and white noise -->
+    <img src="http://imgur.com/ybw3EXW.jpg" class="inst_img">
+  </div>
+
+  <div id="page4" class="instDiv">
+    <p><b>Third</b>, you will see a bar appearing on top of the fixation point. The orientation of the bar will follow the position of the mouse.</p>
+    <p>The task is to match bar orientation with stripes' orientation. By clicking you can confirm the orientation you have chosen.</p>
+    <!-- The task is to adjust the orientation of a bar -->
+    <img src="http://imgur.com/w2xZzof.jpg" class="inst_img">
+  </div>
+
+  <div id="page5" class="instDiv">
+    <!-- Examples of orientation and correct bar adjustment -->
+    <img src="http://imgur.com/IdPHfNz.jpg" class="inst_img">
+    <p>To start off with, we'll give you <b>3 practice trials</b>. During the practice trials, you will get feedback on how far off you are. An error value close to 0 is better; further from 0 means you are far off. Try to be as accurate as possible in adjusting the bar.</p>
+    <div id="startExperimentButton">
+      <a href="#" id="startExperiment">Start Experiment</a>
+    </div>
+  </div>
+  <button type="button" id="previous">Previous</button>
+  <button type="button" id="next">Next</button>
+</div>
+
+<!-- Start form here to capture comments -->
+<!-- <form id="turkSubmit" action="https://www.mturk.com/mturk/externalSubmit" method="get"> -->
+<!-- replace the following line with the above line when using mturk instead of using sandbox -->
+<form id="turkSubmit" action="https://workersandbox.mturk.com/mturk/externalSubmit" method="get">
+  <input type="hidden" name="assignmentId" id="assignmentId" value="">
+  <input type="submit" name="submitButton" id="submitButton" value="Submit">
+
+  <div id="bg" type="hidden">
+    <div id="fix_point"></div>
+    
+    <div id="practice_inst" class="partDiv" type="hidden">
+        <button type="button" id="startPractice">Start practice</button>
+        <p>Practice</p>
+        <div id="practiceCounter"></div>
+        <p>Click anywhere to start this trial</p>
+        <p>Please keep fixation on this dot during the entire experiment</p>
+        <p>Try to adjust the bar within <b>4 seconds</b>. The program will allow you to take a break every 100 trials</p>
+    </div>
+
+    <!-- 500ms of gabor -->
+    <div id="part0" class="partDiv">
+      <img src="" id="gabor_img" class="img">
+      <div class="prac_inst">Stripes with a random orientation</div>
+    </div>
+
+    <!-- 1s of noise -->
+
+    <div id="part1" class='partDiv'>
+      <img src="" width="100" id="noise_img" class="img">
+      <div width="100" class="prac_inst">Patch of noise</div>
+    </div>
+
+    <!-- 250ms of ISI -->
+    <div id="part2" class='partDiv'>
+    </div>
+
+    <div id="part3" class='partDiv'>
+      <div id="bar"></div>
+      <div id="text"></div>
+      <div class="prac_inst">
+        <p>Move the pointer over the dot to activate the bar</p>
+        <p>Then move the pointer to adjust the orientation of the bar matching the orientation of the stripes you previously saw</p>
+        <p>When you are done click to confirm</p>
+      </div>  
+    </div>
+
+    <!-- 500ms of ISI -->
+    <div id="part4" class='partDiv'>
+    </div>
+
+    <div id="part5" class='partDiv'>
+      You can take a break now. Press to continue the trials.
+      <button type="button" id="continueButton">Continue</button>
+    </div>
+
+    <div id="finishPractice" class='partDiv'>
+      <p>Repeat the practice trials if you did not fully understand the task. Or start experiment</p>
+      <button type="button" id="repeatPractice">Repeat practice</button>
+      <button type="button" id="startTrial">Start experiment</button>
+    </div>
+    
+  </div>
+  <div id="recordedData">
+      <input type="hidden" name="width" value="0" id="width">
+      <input type="hidden" name="height" value="0" id="height">
+    
+  </div>
+
+</form>
+
+<script>
+function resize() {
+  width= $("#resW").val();
+  height= $("#resH").val();
+  zw = width/1280;
+  zh = height/800;
+  $('body').css({
+    transform: "scale("+zw+","+zh+")"
+  });
+}
+
+function rand_url(gaborOrNoise) {
+  var urls = (gaborOrNoise == "gabor") ? gabor_urls : noise_urls;
+  var i = Math.floor(Math.random()*urls.length);
+  if (gaborOrNoise == "gabor") {
+    whichGabor = i;
+  } else {
+    whichNoise = i;
+  }
+  return urls[i];
+}
+$("#testDiv").click(function() {
+  $("#testDiv").html("<b>Hi</b>");
+});
+// The parameters that can be adjusted
+var timeout = [500,1000,250,0,500];
+var startPartTime;
+var numTrials = 400;
+var numPractice = 2;
+var trialsPerBreak = 100;
+// These data need to be recorded
+var rt = [0,0,0,0,0];
+var stimulus;
+var response;
+var startBar; // The randomized starting orientation of bar
+var width; // The resolution width of the user monitor
+var height; // The resolution height of the user monitor
+var whichGabor; // which gabor image we're showing for each trial
+var whichNoise; // which noise image we're showing for each trial
+// record data end
+var curPart = 0;
+var nParts = 5;
+var whichTrial = 0;
+var whichInst = 0;
+var practiceMode = true;
+var activated = false;
+var mouseOnFixPoint = false;
+var gabor_urls = [
+  "http://i.imgur.com/cMbgmJl.jpg", 
+  "http://i.imgur.com/CP2sOBf.jpg",
+  "http://i.imgur.com/qrRttYr.jpg",
+  "http://i.imgur.com/GBqU92E.jpg",
+  "http://i.imgur.com/EqduElq.jpg",
+  "http://i.imgur.com/xIGp6hR.jpg",
+  "http://i.imgur.com/gHwGe0t.jpg",
+  "http://i.imgur.com/6VLnewI.jpg",
+  "http://i.imgur.com/qIDSN3j.jpg",
+  "http://i.imgur.com/7JDyP81.jpg",
+  "http://i.imgur.com/1akBHGh.jpg",
+  "http://i.imgur.com/YwzmmjT.jpg",
+  "http://i.imgur.com/E4BSdy1.jpg",
+  "http://i.imgur.com/mZNHh2q.jpg",
+  "http://i.imgur.com/tLZYKzX.jpg",
+  "http://i.imgur.com/9awmagD.jpg",
+  "http://i.imgur.com/Nn5GmjK.jpg",
+  "http://i.imgur.com/L51lxG6.jpg"];
+var noise_urls = [
+  "http://i.imgur.com/vbq3SxK.jpg", 
+  "http://i.imgur.com/2pkzDlA.jpg",
+  "http://i.imgur.com/VBOcEwK.jpg",
+  "http://i.imgur.com/DLZOvul.jpg",
+  "http://i.imgur.com/wPQ1Yxs.jpg",
+  "http://i.imgur.com/N0CGBRe.jpg",
+  "http://i.imgur.com/ZdUiyrn.jpg",
+  "http://i.imgur.com/c5v6bIw.jpg",
+  "http://i.imgur.com/VSSIxSi.jpg",
+  "http://i.imgur.com/mEQ9zZW.jpg",
+  "http://i.imgur.com/628eSGb.jpg",
+  "http://i.imgur.com/mzikdKw.jpg",
+  "http://i.imgur.com/pTfh5Os.jpg",
+  "http://i.imgur.com/eehJMd8.jpg",
+  "http://i.imgur.com/md1Y9dd.jpg",
+  "http://i.imgur.com/wM0oKGA.jpg",
+  "http://i.imgur.com/D7wAIAk.jpg",
+  "http://i.imgur.com/Ozvzaf1.jpg"];
+
+function disableStart(shouldDisable) {
+  $('#agreeAndStart').prop('disabled', shouldDisable);
+}
+
+function showpart(whichPart) {
+  startPartTime = new Date();
+  if (whichPart == 0) {
+    stimulus = Math.round(Math.random() * 360);
+    
+    $('#part' + whichPart).hide();
+    
+    var gabor = $('#gabor_img');
+    gabor.removeAttr("src").attr("src", rand_url("gabor"));
+    // remove the old src before changing to the newsrc
+    // It's possible that the part got shown before the new image is finished
+    // loading; This is to avoid the old image accidentally shown in this situation
+    
+    gabor.css('-moz-transform', 'rotate(' + stimulus + 'deg)');
+    gabor.css('-moz-transform-origin', '50% 50%');
+    gabor.css('-webkit-transform', 'rotate(' + stimulus + 'deg)');
+    gabor.css('-webkit-transform-origin', '50% 50%');
+    gabor.css('-o-transform', 'rotate(' + stimulus + 'deg)');
+    gabor.css('-o-transform-origin', '50% 50%');
+    gabor.css('-ms-transform', 'rotate(' + stimulus + 'deg)');
+    gabor.css('-ms-transform-origin', '50% 50%');
+  } else if (whichPart == 1) {
+    var noise = $("#noise_img");
+    noise.removeAttr("src").attr("src", rand_url("noise"));
+  }
+  $('#part' + whichPart).show();
+  if (practiceMode) {
+    $('.prac_inst').show();
+    $("#text").show();
+  } else {
+    $('.prac_inst').hide();
+    $("#text").hide();
+  }
+  if (whichPart == 3) {
+    var target = $('#bar');
+    $('#fix_point').mouseover(function(e) {
+      activated = true;
+      mouseOnFixPoint = true;
+    });  
+    $('#fix_point').mouseout(function(e) {
+      mouseOnFixPoint = false;
+    });
+    startBar = Math.round(Math.random() * 360);
+    console.log("randeg:"+startBar);
+    target.css('-moz-transform', 'rotate(' + startBar + 'deg)');
+    target.css('-moz-transform-origin', '50% 50%');
+    target.css('-webkit-transform', 'rotate(' + startBar + 'deg)');
+    target.css('-webkit-transform-origin', '50% 50%');
+    target.css('-o-transform', 'rotate(' + startBar + 'deg)');
+    target.css('-o-transform-origin', '50% 50%');
+    target.css('-ms-transform', 'rotate(' + startBar + 'deg)');
+    target.css('-ms-transform-origin', '50% 50%');
+
+    $(document).mousemove(function(e) {
+      if (activated) {
+        var mouse_x = e.clientX;
+        var mouse_y = e.clientY;
+        var radians = Math.atan2(mouse_x - window.innerWidth/2, mouse_y - window.innerHeight/2);
+        var degree = (radians * (180 / Math.PI) * -1)+90;
+        response = (Math.round(degree)+360+90)%360;
+
+        target.css('-moz-transform', 'rotate(' + degree + 'deg)');
+        target.css('-moz-transform-origin', '50% 50%');
+        target.css('-webkit-transform', 'rotate(' + degree + 'deg)');
+        target.css('-webkit-transform-origin', '50% 50%');
+        target.css('-o-transform', 'rotate(' + degree + 'deg)');
+        target.css('-o-transform-origin', '50% 50%');
+        target.css('-ms-transform', 'rotate(' + degree + 'deg)');
+        target.css('-ms-transform-origin', '50% 50%');
+
+        if (practiceMode) {
+          var err = error(stimulus, response);
+          $("#text").text("Stripe Orientation="+stimulus+"\nBar Orientation="+response+"\nError="+err);
+        }      }
+    });
+  }
+}
+
+function hidepart(whichPart) {
+  var curTime = new Date();
+  rt[whichPart] = curTime - startPartTime;
+  $('#reactionTime' + whichPart).val(rt[whichPart]);
+  $('#part' + whichPart).hide();
+  if (!practiceMode) {
+    $('#recordedData').append('<input type="hidden" name="trial'+
+      whichTrial+
+      'question'+
+      whichPart+'RT" value="'+
+      rt[whichPart]+'" id="trial'+
+      whichTrial+'reactionTime'+
+      whichPart+'">');
+    if (whichPart==3) { // the part for clicking the bar
+      $('#recordedData').append('<input type="hidden" name="trial'+
+        whichTrial+
+        'StartBarOrientation" value="'+
+        startBar+'" id="trial'+
+        whichTrial+'StartBarOrientation">');
+      $('#recordedData').append('<input type="hidden" name="trial'+
+        whichTrial+
+        'TargetGabor" value="'+
+        stimulus+'" id="trial'+
+        whichTrial+'TargetGabor">');
+      $('#recordedData').append('<input type="hidden" name="trial'+
+        whichTrial+
+        'BarResponse" value="'+
+        response+'" id="trial'+
+        whichTrial+'BarResponse">');
+      $('#recordedData').append('<input type="hidden" name="trial'+
+        whichTrial+
+        'WhichGabor" value="'+
+        whichGabor+'" id="trial'+
+        whichTrial+'WhichGabor">');
+      $('#recordedData').append('<input type="hidden" name="trial'+
+        whichTrial+
+        'WhichNoise" value="'+
+        whichNoise+'" id="trial'+
+        whichTrial+'WhichNoise">');
+    }
+  }
+}
+
+function startTrial(whichTrial) {
+  console.log("Start trial"+whichTrial);
+}
+
+function finishTrial(whichTrial) {
+  console.log("Time series:"+rt);
+  console.log("Finish trial"+whichTrial);
+}
+function showTrial() {
+      showpart(0);
+      startTrial(whichTrial);
+      setTimeout(function() {
+        hidepart(0);
+        showpart(1);
+        setTimeout(function() {
+          hidepart(1);
+          showpart(2);
+          setTimeout(function() {
+            hidepart(2);
+            showpart(3);
+          }, timeout[2])
+        }, timeout[1]);
+      }, timeout[0]);
+}
+
+function showInstructions() {
+  $("#consent").hide();
+  $(".instDiv").hide();
+  $("#page"+whichInst).show();
+  if (whichInst == 5) {
+    $("#next").hide();
+  } else {
+    $("#next").show();
+  }
+  if (whichInst <= 1) {
+    $("#previous").hide();
+  } else {
+    $("#previous").show();
+  }
+  
+
+}
+
+function showFirstpart() {
+  $('#instructions').hide();
+  $('#bg').show();
+  $('#fix_point').show();
+  $('#practice_inst').show();
+  practiceMode = true;
+  $('#startPractice').bind("click.startPractice", function() {
+    $('#startPractice').unbind("click.startPractice");
+    $('#practice_inst').hide();
+    startPartTime = new Date();
+    showTrial();
+  })
+}
+
+
+function error(gabor_deg, bar_deg){
+  var diff = (gabor_deg - bar_deg+360) % 180;
+  return Math.min(diff, 180-diff);
+}
+
+/* Save the data to the server (choose what to save) */
+function SaveData() {
+  $('#width').val(width);
+  $('#height').val(height);
+  $('#assignmentId').val(GetAssignmentId());
+}
+
+/* Wait for clicks */
+$(document).ready(function() {
+  $('#agreeAndStart').click(showInstructions);
+  $('#next').click(function() {
+      if (whichInst==0) {
+        resize();
+      }
+      whichInst++;
+      showInstructions();});
+  $('#previous').click(function() {
+      whichInst--;
+      showInstructions();});
+
+  $('#startExperiment').click(showFirstpart);
+    $("#part3").bind("click.trial"+whichTrial, function() {
+        if (activated && !mouseOnFixPoint) {
+
+        // $("#part3").unbind('click.trial'+whichTrial);
+        activated = false;
+        hidepart(3);
+        showpart(4);
+        setTimeout(function() {
+          hidepart(4);
+          finishTrial(whichTrial);
+          whichTrial++;
+          if (practiceMode && (whichTrial >= numPractice)) {
+            $("#finishPractice").show();
+            $("#startTrial").bind("click.startTrial", function(){
+              $("#startTrial").unbind("click.startTrial");
+              $("#finishPractice").hide();
+              whichTrial = 0;
+              practiceMode = false;
+              showTrial(whichTrial);});
+            $("#repeatPractice").bind("click.repeatPractice", function(){
+              $("#repeatPractice").unbind("click.repeatPractice");
+              $("#finishPractice").hide();
+              whichTrial = 0;
+              practiceMode = true;
+              showTrial(whichTrial);
+            });
+          } else if (whichTrial < numTrials) {
+            if (whichTrial % trialsPerBreak == 0) {
+              showpart(5);
+              $("#continueButton").bind("click.continue", function(){
+                $("#continueButton").unbind("click.continue");
+                hidepart(5);
+                showTrial(whichTrial)
+              });
+            } else {
+              showTrial(whichTrial);
+            }
+          } else {
+            SaveData();
+            $('#submitButton').show();
+
+          }
+        }, timeout[4]);
+    }});
+});
+</script>
+name="trialsPerBreak
