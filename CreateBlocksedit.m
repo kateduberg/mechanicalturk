@@ -71,7 +71,7 @@ for i=1:2
 'question4RT', 
 'question3RTTillActivation', 
 'question3RTFromActivation');
-% split in blocks (count #5rt?)
+% split in blocks (count # of 5rt?)
 
 end
 
