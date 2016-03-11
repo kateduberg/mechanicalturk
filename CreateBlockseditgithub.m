@@ -3,11 +3,14 @@
 
 nTrials = 99; % totalTrials - must be divided into blocks
 
-load Batch_124539.mat
+load Batch124539.mat
 
 for sub=1:2
+    
 for i=0:nTrials
-   TargetGabor = nan(1,nTrials);
+  
+    
+    TargetGabor = nan(1,nTrials);
 BarResponse = nan(1,nTrials);
 StartBarOrientationS = nan(1,nTrials);
 WhichGabor = nan(1,nTrials);
@@ -56,22 +59,15 @@ WhichGabor(i+1)=str2num(cell2mat(eval(WhichGaborSTR))); % +1 because it starts f
 WhichNoiseSTR=(['data.Answer.trial' num2str(i+1) 'WhichNoise(' num2str(sub) ')']);  %+1 because it is shifted of 1
 WhichNoise(i+1)=str2num(cell2mat(eval(WhichNoiseSTR))); % +1 because it starts from zero!
 
+% save subject in mat file
+
+   filename = ['subjectdata.' num2str(sub) '.mat'];
+        save(filename, 'StartBarOrientation', 'WhichNoise', 'question0RT', 'question1RT', 'question2RT', 'question3RT', 'question4RT', 'question3RTTillActivation', 'question3RTFromActivation');
+
+% split in blocks (count # of 5rt?)
+    
 end
 
-% save subject in mat file
-for i=1:2
-    save ('subjectdata('num2str (i ')', 
-'StartBarOrientation', 
-'WhichGabor', 
-'WhichNoise', 
-'question0RT', 
-'question1RT', 
-'question2RT', 
-'question3RT', 
-'question4RT', 
-'question3RTTillActivation', 
-'question3RTFromActivation');
-% split in blocks (count # of 5rt?)
 
 end
 
