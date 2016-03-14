@@ -1,9 +1,13 @@
 %turn subject matlab data into blocks to be analyzed by
 %totalanalysisRA script
 
-nTrials = 99; % totalTrials - must be divided into blocks
+prompt = 'how many trials? ';
+nTrials = input(prompt); % totalTrials - must be divided into blocks (ask the user how many)
 
-load Batch124539.mat
+filename = uigetfile
+load (filename)
+%ask user to choose .mat file for conversion
+
 
 for sub=1:2
     
